@@ -1,4 +1,4 @@
-package com.jarikkomarik.readitlater.controller;
+package com.jarikkomarik.readitlater.service;
 
 import com.jarikkomarik.readitlater.model.User;
 import com.jarikkomarik.readitlater.repository.UserRepository;

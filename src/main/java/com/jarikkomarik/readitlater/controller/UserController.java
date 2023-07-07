@@ -1,6 +1,7 @@
 package com.jarikkomarik.readitlater.controller;
 
 import com.jarikkomarik.readitlater.model.User;
+import com.jarikkomarik.readitlater.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
