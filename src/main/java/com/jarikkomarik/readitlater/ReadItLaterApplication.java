@@ -11,7 +11,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class ReadItLaterApplication implements CommandLineRunner {
 
     public static void main(String[] args) {
-        if(System.getProperty("bot.token") == null) throw new MissingTokenException();
+        if(System.getenv("bot.token") == null) throw new MissingTokenException();
         SpringApplication.run(ReadItLaterApplication.class, args);
     }
 
