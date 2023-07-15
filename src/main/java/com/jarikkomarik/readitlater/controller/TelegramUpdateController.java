@@ -1,6 +1,7 @@
 package com.jarikkomarik.readitlater.controller;
 
 import com.jarikkomarik.readitlater.service.ReadItLaterBot;
+import com.jarikkomarik.readitlater.service.UpdateRoutingService;
 import lombok.SneakyThrows;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,13 +10,11 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 @RestController
-public record TelegramUpdateController(ReadItLaterBot readItLaterBot) {
+public record TelegramUpdateController(ReadItLaterBot readItLaterBot, UpdateRoutingService updateRoutingService) {
 
     @SneakyThrows
     @PostMapping("/")
     public void onUpdateReceived(@RequestBody Update update) {
-        Long chatId = update.getMessage().getChatId();
-        String text = update.getMessage().getText();
-        readItLaterBot.execute(SendMessage.builder().chatId(chatId).text(text).build());
+        updateRoutingService.processUpdate(update);
     }
 }

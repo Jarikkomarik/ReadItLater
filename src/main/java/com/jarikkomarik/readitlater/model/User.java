@@ -1,8 +1,16 @@
 package com.jarikkomarik.readitlater.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.data.annotation.Id;
 
-import java.util.List;
+import java.util.Set;
 
-public record User (String name, @Id String chatId, List<Article> articles){
+@Data
+@AllArgsConstructor
+public class User {
+
+    String name;
+    @Id Long chatId;
+    Set<Article> articles;
 }
