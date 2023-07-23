@@ -35,7 +35,7 @@ public class WebHookRegistrant {
                 .bodyToMono(TelegramHttpResponse.class).block();
 
         if (telegramHttpResponse.ok()) {
-            log.info("Successfully registered webhook to url: {}.", webhookAddress);
+            log.info("Successfully registered webhook to url: {} .", webhookAddress);
         } else {
             System.exit(1);
         }
