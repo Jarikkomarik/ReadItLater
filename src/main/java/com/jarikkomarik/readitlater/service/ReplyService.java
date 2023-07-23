@@ -80,11 +80,11 @@ public record ReplyService(ReadItLaterBot readItLaterBot, Constants constants) {
     public void sendArticle(Article article, long chatId, String text) {
         var removeButton = new InlineKeyboardButton();
         removeButton.setText("\uD83D\uDDD1");
-        removeButton.setCallbackData(CALLBACK_DELETE_ARTICLE + "#" + article.getUrl());
+        removeButton.setCallbackData(CALLBACK_DELETE_ARTICLE + "#" + article.getCreationTime());
 
         var readStatusButton = new InlineKeyboardButton();
         readStatusButton.setText(article.isRead() ? "Mark as unread ❌" : "Mark as read ✅");
-        readStatusButton.setCallbackData((article.isRead() ? CALLBACK_MARK_UNREAD : CALLBACK_MARK_READ) + "#" + article.getUrl());
+        readStatusButton.setCallbackData((article.isRead() ? CALLBACK_MARK_UNREAD : CALLBACK_MARK_READ) + "#" + article.getCreationTime());
 
         try {
             readItLaterBot.execute(

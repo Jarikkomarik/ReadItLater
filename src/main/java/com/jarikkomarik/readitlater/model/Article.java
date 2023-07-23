@@ -2,14 +2,18 @@ package com.jarikkomarik.readitlater.model;
 
 import lombok.*;
 
+import java.time.LocalTime;
 import java.util.Objects;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(force = true)
+@RequiredArgsConstructor
 public class Article {
+    private long creationTime = System.currentTimeMillis();
+    @NonNull
     String url;
+    @NonNull
     boolean isRead;
 
     @Override

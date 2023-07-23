@@ -72,15 +72,15 @@ public record UpdateRoutingService(UserService userService,
                 replyService.sendArticles(user.getArticles(), chatId);
                 break;
             case CALLBACK_MARK_READ:
-                article = userService.updateStatus(user, callbackSplit[1], true);
+                article = userService.updateStatus(user, Long.valueOf(callbackSplit[1]), true);
                 replyService.sendMessage(chatId, "Marked article - " + article.getUrl() + "\nas Read ✅.");
                 break;
             case CALLBACK_MARK_UNREAD:
-                article = userService.updateStatus(user, callbackSplit[1], false);
+                article = userService.updateStatus(user, Long.valueOf(callbackSplit[1]), false);
                 replyService.sendMessage(chatId, "Marked article - " + article.getUrl() + "\nas Unread ❌.");
                 break;
             case CALLBACK_DELETE_ARTICLE:
-                article = userService.deleteArticle(user, callbackSplit[1]);
+                article = userService.deleteArticle(user, Long.valueOf(callbackSplit[1]));
                 replyService.sendMessage(chatId, "Removed article - " + article.getUrl() + ".");
                 break;
         }

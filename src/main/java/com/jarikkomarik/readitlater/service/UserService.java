@@ -27,24 +27,24 @@ public record UserService(UserRepository userRepository) {
         return userRepository.findById(chatId);
     }
 
-    public Article updateStatus(User user, String url, boolean b) {
-        Article article = getArticleByUrl(url, user);
+    public Article updateStatus(User user, Long creationTime, boolean b) {
+        Article article = getArticleByCreationTime(creationTime, user);
         article.setRead(b);
         userRepository.save(user);
 
         return article;
     }
 
-    public Article deleteArticle(User user, String url) {
-        var article = getArticleByUrl(url, user);
+    public Article deleteArticle(User user, Long creationTime) {
+        var article = getArticleByCreationTime(creationTime, user);
         user.getArticles().remove(article);
         userRepository.save(user);
         return article;
     }
 
-    private Article getArticleByUrl(String url, User user) {
+    private Article getArticleByCreationTime(Long creationTime, User user) {
         return user.getArticles().stream()
-                .filter(ar -> ar.getUrl().equals(url))
+                .filter(ar -> ar.getCreationTime() == creationTime)
                 .findFirst().orElseThrow();
     }
 
