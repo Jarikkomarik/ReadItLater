@@ -54,4 +54,11 @@ public class UtilServiceTest {
         String mixedTextWithInvalidUrl = "Follow this URL: invalid-url";
         assertNull(utilService.getUrl(mixedTextWithInvalidUrl));
     }
+
+    @Test
+    public void testGetUrlWithLongerPath() {
+        String mixedTextWithInvalidUrl = "https://www.simform.com/blog/angular-vs-react/";
+        assertEquals(mixedTextWithInvalidUrl, utilService.getUrl(mixedTextWithInvalidUrl));
+    }
+
 }
