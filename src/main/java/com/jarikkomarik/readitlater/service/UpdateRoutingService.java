@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.HashSet;
-import java.util.Optional;
 
 import static com.jarikkomarik.readitlater.configuration.Constants.*;
 
@@ -57,8 +56,7 @@ public record UpdateRoutingService(UserService userService,
     }
 
     private boolean updateIsUnsupported(Update update) {
-        if (update.getMessage().getPhoto() != null || update.getMessage() == null) return true;
-        return false;
+        return update.getMessage().getPhoto() != null || update.getMessage() == null;
     }
 
     private void handleCallback(Update update) {
@@ -72,21 +70,19 @@ public record UpdateRoutingService(UserService userService,
             Article article;
 
             switch (callbackSplit[0]) {
-                case CALLBACK_GET_ALL:
-                    replyService.sendArticles(user.getArticles(), chatId);
-                    break;
-                case CALLBACK_MARK_READ:
+                case CALLBACK_GET_ALL -> replyService.sendArticles(user.getArticles(), chatId);
+                case CALLBACK_MARK_READ -> {
                     article = userService.updateStatus(user, Long.valueOf(callbackSplit[1]), true);
                     replyService.sendMessage(chatId, "Marked article - " + article.getUrl() + "\nas Read ✅.");
-                    break;
-                case CALLBACK_MARK_UNREAD:
+                }
+                case CALLBACK_MARK_UNREAD -> {
                     article = userService.updateStatus(user, Long.valueOf(callbackSplit[1]), false);
                     replyService.sendMessage(chatId, "Marked article - " + article.getUrl() + "\nas Unread ❌.");
-                    break;
-                case CALLBACK_DELETE_ARTICLE:
+                }
+                case CALLBACK_DELETE_ARTICLE -> {
                     article = userService.deleteArticle(user, Long.valueOf(callbackSplit[1]));
                     replyService.sendMessage(chatId, "Removed article - " + article.getUrl() + ".");
-                    break;
+                }
             }
 
         });
