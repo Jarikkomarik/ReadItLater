@@ -1,7 +1,7 @@
 package com.jarikkomarik.readitlater.repository;
 
 import com.jarikkomarik.readitlater.model.User;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 
-public interface UserRepository extends MongoRepository<User,Long> {
+public interface UserRepository extends ReactiveCrudRepository<User,Long> {
 }

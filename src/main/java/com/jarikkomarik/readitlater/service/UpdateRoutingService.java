@@ -18,8 +18,7 @@ public record UpdateRoutingService(UserService userService,
                                    ReplyService replyService,
                                    Constants constants,
                                    ReadItLaterBot readItLaterBot,
-                                   UtilService utilService
-) {
+                                   UtilService utilService) {
 
 
     public void processUpdate(Update update) {
@@ -30,60 +29,67 @@ public record UpdateRoutingService(UserService userService,
 
         if (updateIsUnsupported(update)) return;
 
-        if (update.getMessage() == null) return;
-        Optional<User> optionalUser = userService.getUser(update.getMessage().getChatId());
-        if (optionalUser.isPresent()) {
-            var user = optionalUser.get();
-            String url = utilService.getUrl(update.getMessage().getText());
 
-            if (utilService.urlIsValid(update.getMessage().getText()) && url != null) {
-                userService.addArticle(user, url);
-                replyService.sendAddedUrlMessage(user.getChatId(), url);
-            } else {
-                replyService.sendMessage(user.getChatId(), ADD_URL_FAILURE_MESSAGE_TEXT);
-            }
+        userService.getUser(update.getMessage().getChatId())
+            .subscribe(optionalUser -> {
+                if (optionalUser.isPresent()) {
+                    var user = optionalUser.get();
+                    String url = utilService.getUrl(update.getMessage().getText());
 
-        } else {
-            var newUser = new User(update.getMessage().getChat().getUserName(), update.getMessage().getChatId(), new HashSet<>());
-            userService.saveUser(newUser);
-            log.info("Created new OptionalUser: {}.", newUser);
+                    if (utilService.urlIsValid(update.getMessage().getText()) && url != null) {
+                        userService.addArticle(user, url);
+                        replyService.sendAddedUrlMessage(user.getChatId(), url);
+                    } else {
+                        replyService.sendMessage(user.getChatId(), ADD_URL_FAILURE_MESSAGE_TEXT);
+                    }
 
-            replyService.sendWelcomeMessage(update.getMessage().getChatId());
-        }
+                } else {
+                    var newUser = new User(update.getMessage().getChat().getUserName(), update.getMessage().getChatId(), new HashSet<>());
+                    userService.saveUser(newUser);
+                    log.info("Created new OptionalUser: {}.", newUser);
+
+                    replyService.sendWelcomeMessage(update.getMessage().getChatId());
+                }
+
+            });
+
 
     }
 
     private boolean updateIsUnsupported(Update update) {
-        if (update.getMessage().getPhoto() != null) return true;
+        if (update.getMessage().getPhoto() != null || update.getMessage() == null) return true;
         return false;
     }
 
     private void handleCallback(Update update) {
         long chatId = update.getCallbackQuery().getFrom().getId();
-        User user = userService.getUser(chatId).orElseThrow();
 
-        String[] callbackSplit = update.getCallbackQuery().getData().split("#");
+        userService.getUser(chatId).subscribe(userOptional -> {
+            User user = userOptional.orElseThrow();
 
-        User updatedUser;
-        Article article;
+            String[] callbackSplit = update.getCallbackQuery().getData().split("#");
 
-        switch (callbackSplit[0]) {
-            case CALLBACK_GET_ALL:
-                replyService.sendArticles(user.getArticles(), chatId);
-                break;
-            case CALLBACK_MARK_READ:
-                article = userService.updateStatus(user, Long.valueOf(callbackSplit[1]), true);
-                replyService.sendMessage(chatId, "Marked article - " + article.getUrl() + "\nas Read ✅.");
-                break;
-            case CALLBACK_MARK_UNREAD:
-                article = userService.updateStatus(user, Long.valueOf(callbackSplit[1]), false);
-                replyService.sendMessage(chatId, "Marked article - " + article.getUrl() + "\nas Unread ❌.");
-                break;
-            case CALLBACK_DELETE_ARTICLE:
-                article = userService.deleteArticle(user, Long.valueOf(callbackSplit[1]));
-                replyService.sendMessage(chatId, "Removed article - " + article.getUrl() + ".");
-                break;
-        }
+            Article article;
+
+            switch (callbackSplit[0]) {
+                case CALLBACK_GET_ALL:
+                    replyService.sendArticles(user.getArticles(), chatId);
+                    break;
+                case CALLBACK_MARK_READ:
+                    article = userService.updateStatus(user, Long.valueOf(callbackSplit[1]), true);
+                    replyService.sendMessage(chatId, "Marked article - " + article.getUrl() + "\nas Read ✅.");
+                    break;
+                case CALLBACK_MARK_UNREAD:
+                    article = userService.updateStatus(user, Long.valueOf(callbackSplit[1]), false);
+                    replyService.sendMessage(chatId, "Marked article - " + article.getUrl() + "\nas Unread ❌.");
+                    break;
+                case CALLBACK_DELETE_ARTICLE:
+                    article = userService.deleteArticle(user, Long.valueOf(callbackSplit[1]));
+                    replyService.sendMessage(chatId, "Removed article - " + article.getUrl() + ".");
+                    break;
+            }
+
+        });
 
     }
 

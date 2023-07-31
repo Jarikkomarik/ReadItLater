@@ -4,27 +4,25 @@ import com.jarikkomarik.readitlater.model.Article;
 import com.jarikkomarik.readitlater.model.User;
 import com.jarikkomarik.readitlater.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.util.List;
+
 import java.util.Optional;
 
 @Service
 public record UserService(UserRepository userRepository) {
 
-    public List<User> getUsers() {
+    public Flux<User> getUsers() {
         return userRepository.findAll();
     }
 
-    public User saveUser(User user) {
+    public Mono<User> saveUser(User user) {
         return userRepository.save(user);
     }
 
-    public boolean userIsRegistered(long chatId) {
-        return userRepository.existsById(chatId);
-    }
-
-    public Optional<User> getUser(long chatId) {
-        return userRepository.findById(chatId);
+    public Mono<Optional<User>> getUser(long chatId) {
+        return userRepository.findById(chatId).singleOptional();
     }
 
     public Article updateStatus(User user, Long creationTime, boolean b) {
