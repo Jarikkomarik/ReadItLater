@@ -37,17 +37,21 @@ public record UpdateRoutingService(UserService userService,
 
                     if (utilService.urlIsValid(update.getMessage().getText()) && url != null) {
                         userService.addArticle(user, url);
-                        replyService.sendAddedUrlMessage(user.getChatId(), url);
+                        userService.saveUser(user).subscribe(savedUser -> {
+                            log.info("added article to user: {}.", savedUser.getChatId());
+                            replyService.sendAddedUrlMessage(user.getChatId(), url);
+                        });
                     } else {
                         replyService.sendMessage(user.getChatId(), ADD_URL_FAILURE_MESSAGE_TEXT);
                     }
 
                 } else {
                     var newUser = new User(update.getMessage().getChat().getUserName(), update.getMessage().getChatId(), new HashSet<>());
-                    userService.saveUser(newUser);
-                    log.info("Created new OptionalUser: {}.", newUser);
+                    userService.saveUser(newUser).subscribe(user -> {
+                        log.info("Created new OptionalUser: {}.", newUser);
+                        replyService.sendWelcomeMessage(update.getMessage().getChatId());
+                    });
 
-                    replyService.sendWelcomeMessage(update.getMessage().getChatId());
                 }
 
             });
@@ -73,15 +77,25 @@ public record UpdateRoutingService(UserService userService,
                 case CALLBACK_GET_ALL -> replyService.sendArticles(user.getArticles(), chatId);
                 case CALLBACK_MARK_READ -> {
                     article = userService.updateStatus(user, Long.valueOf(callbackSplit[1]), true);
-                    replyService.sendMessage(chatId, "Marked article - " + article.getUrl() + "\nas Read ✅.");
+                    userService.saveUser(user).subscribe(savedUser -> {
+                        log.info("update status for user: {}.", savedUser.getChatId());
+                        replyService.sendMessage(chatId, "Marked article - " + article.getUrl() + "\nas Read ✅.");
+                    });
+
                 }
                 case CALLBACK_MARK_UNREAD -> {
                     article = userService.updateStatus(user, Long.valueOf(callbackSplit[1]), false);
-                    replyService.sendMessage(chatId, "Marked article - " + article.getUrl() + "\nas Unread ❌.");
+                    userService.saveUser(user).subscribe(savedUser -> {
+                        log.info("update status for user: {}.", savedUser.getChatId());
+                        replyService.sendMessage(chatId, "Marked article - " + article.getUrl() + "\nas Unread ❌.");
+                    });
                 }
                 case CALLBACK_DELETE_ARTICLE -> {
                     article = userService.deleteArticle(user, Long.valueOf(callbackSplit[1]));
-                    replyService.sendMessage(chatId, "Removed article - " + article.getUrl() + ".");
+                    userService.saveUser(user).subscribe(savedUser -> {
+                        log.info("removed article from user: {}.", savedUser.getChatId());
+                        replyService.sendMessage(chatId, "Removed article - " + article.getUrl() + ".");
+                    });
                 }
             }
 

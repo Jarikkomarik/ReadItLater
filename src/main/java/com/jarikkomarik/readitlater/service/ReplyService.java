@@ -72,7 +72,7 @@ public record ReplyService(ReadItLaterBot readItLaterBot, Constants constants) {
             sendMessage(chatId, "There are no articles :(");
         }
         articles.forEach(article -> {
-            String text = "Article url - " + article.getUrl() + "\nStatus - You " + (article.isRead() ? "have read " : "haven't read ") + "this article.";
+            String text = "Article url:\n" + article.getUrl() + "\nStatus - You " + (article.isRead() ? "have read " : "haven't read ") + "this article.";
             sendArticle(article, chatId, text);
         });
     }

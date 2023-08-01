@@ -4,12 +4,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class Constants {
-    public static final String WELCOME_MESSAGE_TEXT = "\uD83D\uDC4B Welcome to the Read It Later bot! \uD83D\uDCDA✨ \nSend the articles you want to read later, and I'll take care of the rest.";
-    public static final String ADDED_URL_MESSAGE_TEXT = "Added following article: ";
+    public static final String WELCOME_MESSAGE_TEXT = "\uD83D\uDC4B Welcome to the Read It Later bot!\nSend the articles you want to read later, and I'll take care of the rest.";
+    public static final String ADDED_URL_MESSAGE_TEXT = "Added following article:\n";
 
-    public static final String GET_ALL_ARTICLES_MESSAGE_TEXT = "\uD83D\uDD0D If you want to see all your saved articles, tap \"Show all articles.\" ";
+    public static final String GET_ALL_ARTICLES_MESSAGE_TEXT = "\uD83D\uDD0D Show all articles ";
 
-    public static final String ADD_URL_FAILURE_MESSAGE_TEXT = "❌ Oops! It seems there was an issue adding the article. Please make sure you're sending a valid URL. \uD83D\uDD17";
+    public static final String ADD_URL_FAILURE_MESSAGE_TEXT = "❌ Oops!\nPlease make sure you're sending a valid URL. \uD83D\uDD17";
 
     public static final String SEND_DAILY_READ_TEXT = "\uD83C\uDF1F Enjoy your daily read! Today's article is - ";
 

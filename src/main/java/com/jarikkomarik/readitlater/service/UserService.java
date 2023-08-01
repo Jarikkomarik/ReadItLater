@@ -3,6 +3,7 @@ package com.jarikkomarik.readitlater.service;
 import com.jarikkomarik.readitlater.model.Article;
 import com.jarikkomarik.readitlater.model.User;
 import com.jarikkomarik.readitlater.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -11,6 +12,7 @@ import reactor.core.publisher.Mono;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public record UserService(UserRepository userRepository) {
 
     public Flux<User> getUsers() {
@@ -28,15 +30,12 @@ public record UserService(UserRepository userRepository) {
     public Article updateStatus(User user, Long creationTime, boolean b) {
         Article article = getArticleByCreationTime(creationTime, user);
         article.setRead(b);
-        userRepository.save(user);
-
         return article;
     }
 
     public Article deleteArticle(User user, Long creationTime) {
         var article = getArticleByCreationTime(creationTime, user);
         user.getArticles().remove(article);
-        userRepository.save(user);
         return article;
     }
 
@@ -48,6 +47,5 @@ public record UserService(UserRepository userRepository) {
 
     public void addArticle(User user, String url) {
         user.getArticles().add(new Article(url, false));
-        userRepository.save(user);
     }
 }
