@@ -18,7 +18,7 @@ import static com.jarikkomarik.readitlater.configuration.Constants.*;
 @Slf4j
 public record ReplyService(ReadItLaterBot readItLaterBot, Constants constants) {
 
-    public void sendWelcomeMessage(long chatId) {
+    public void sendWelcomeMessage(long chatId) {//todo: use sendMessage here
         try {
             readItLaterBot.execute(
                     SendMessage.builder()
