@@ -8,15 +8,11 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-public class ReadItLaterApplication implements CommandLineRunner {
+public class ReadItLaterApplication {
 
     public static void main(String[] args) {
         if(System.getenv("bot.token") == null) throw new MissingTokenException();
         SpringApplication.run(ReadItLaterApplication.class, args);
     }
 
-    @Override
-    public void run(String... args) throws Exception {
-
-    }
 }
