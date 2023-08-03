@@ -13,7 +13,7 @@ import static com.jarikkomarik.readitlater.configuration.Constants.SEND_DAILY_RE
 public record NotificationService (UserRepository userRepository, ReplyService replyService) {
     @Scheduled(cron = "0 30 14 * * MON-SAT")
     public void sendNotifications() {
-        userRepository.findAll().doOnNext(this::sendRandomArticle);
+        userRepository.findAll().doOnNext(this::sendRandomArticle).subscribe();
     }
 
     private void sendRandomArticle(User user) {
