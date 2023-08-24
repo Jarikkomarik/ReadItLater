@@ -3,9 +3,3 @@ bot:
     register:
       host: https://api.telegram.org
       template: /bot{my_bot_token}/setWebhook
-
-spring:
-  data:
-    mongodb:
-      uri: mongodb+srv://${DATABASE_USER}:${DATABASE_PASSWORD}@readitlater.angikod.mongodb.net/?retryWrites=true&w=majority
-      database: ReadItLater
